@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renxuan.journal_dao.dao.ArticleDao">
+
+ <resultMap id="article" type="Article">
+        <id property="article_id" column="article_id" javaType="String"/>
+        <result property="periodical_id" column="periodical_id" javaType="String"/>
+        <result property="user_id" column="user_id" javaType="String"/>
+        <result property="author" column="author" javaType="String"/>
+        <result property="title" column="title" javaType="String"/>
+        <result property="keyword" column="keyword" javaType="String"/>
+        <result property="summary" column="summary" javaType="String"/>
+        <result property="stage" column="stage" javaType="Integer"/>
+        <result property="time" column="time" javaType="java.util.Date"/>
+        <result property="file_name" column="file_name" javaType="String"/>
+        <result property="file_path" column="file_path" javaType="String"/>
+        <result property="cover_name" column="cover_name" javaType="String"/>
+        <result property="cover_path" column="cover_path" javaType="String"/>
+        <result property="viewer" column="viewer" javaType="Integer"/>
+        <!-- file到blob转换用到转换器 -->
+        <!-- 级联user -->
+        <association property="user" column="user_id" javaType="User" >
+            <id property="user_id" column="user_id" javaType="String"/>
+            <result property="name" column="name" javaType="String"/>
+            <result property="tel" column="tel" javaType="String"/>
+        	<result property="department" column="department" javaType="String"/>
+        	<result property="checked" column="checked" javaType="Integer"/>
+        	<result property="grade" column="grade" javaType="Integer"/>
+        	<result property="description" column="description" javaType="String"/>
+        	<result property="portrait_name" column="portrait_name" javaType="String"/>
+        	<result property="portrait_path" column="portrait_path" javaType="String"/>	
+            <!-- 不需要的property可以不用配置 -->
+        </association>
+        <association property="periodical" column="periodical_id" javaType="Periodical">
+        	 <id property="periodical_id" column="periodical_id" javaType="String"/>
+        	<result property="periodical_title" column="periodical_title" javaType="String"/>
+        	<result property="preface" column="preface" javaType="String"/>
+        	<!-- 奇葩bug 设置result使用的源码应该通过getCoumn(column_name)来的
+        		通过使用sql别名来解决
+        	 -->
+        	<result property="cover_name" column="pcover_name" javaType="String"/>
+        	<result property="cover_path" column="pcover_path" javaType="String"/>	
+        </association>
+        <!-- 级联periodical -->
+    </resultMap>
+    
+	<!-- 
+	
+	
+	<parameterMap type="" id=""></parameterMap>
+	public void insert(Article article);
+	public void update(Article article);
+	public void updateStage(String article_id,Integer stage);
+	public void delete(Article article);
+	public void deleteById(String article_id);
+	public List<Article> selectAll();
+	public List<Article> selectById(String article_id);
+	public List<Article> selectByUserId(String userId);
+	public List<Article> selectByUserName(String name);
+
+	public List<Article> selectByPeriodicalId(String periodicalId);
+	public List<Article> selectByUserDepartment(String department);
+	public List<Article> selectByTitle(String title);
+	public List<Article> selectByKeyword(String keyword);
+	public List<Article> selectByStage(int stage);
+	public List<Article> selectByTime(@Param("startTime")Date startTime,@Param("endTime")Date endTime);
+	public String getFilePathByArticleId(String article_id);
+    -->
+    
+    
+   <insert id="insert" parameterType="Article">
+		insert into article(article_id,periodical_id,user_id,author,title,
+		keyword,summary,time,file_name,file_path,cover_name,cover_path)
+		values(#{article_id},#{periodical_id},#{user_id},#{author},#{title},
+		#{keyword},#{summary},#{time},
+		#{file_name,jdbcType=VARCHAR},
+		#{file_path,jdbcType=VARCHAR},
+		#{cover_name,jdbcType=VARCHAR},
+		#{cover_path,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delete"	parameterType="Article">
+		delete from article where article_id=#{article_id}
+	</delete>
+
+	<delete id="deleteById" parameterType="String">
+		delete from article where article_id=#{article_id}
+	</delete>
+	 <update id="update" parameterType="Article">
+        update article set periodical_id=#{periodical_id},
+        user_id=#{user_id},author=#{author},title=#{title},
+        keyword=#{keyword},summary=#{summary},stage=#{stage},
+        time=#{time},file_name=#{file_name},file_path=#{file_path},
+        cover_path=#{cover_path},cover_name=#{cover_name}
+        where article_id=#{article_id}
+    </update>
+   
+    <update id="updateStage" >
+        update article set stage=#{stage}
+        where article_id=#{article_id}
+    </update>
+    <update id="updateViewer" >
+        update article set viewer=#{viewer}
+        where article_id=#{article_id}
+    </update>
+	<select id="selectAll" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		order by a.stage, a.time desc
+	</select>
+	
+	
+	<select id="selectById" parameterType="String" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.article_id=#{id}
+		order by a.time desc
+	</select>
+	
+	
+	<select id="selectByUserId" parameterType="String" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.user_id=#{id}
+		order by a.stage,a.time desc
+	</select>
+	
+	
+	
+	<select id="selectByUserName" parameterType="String" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where u.name=#{name}
+		order by a.stage,a.time desc
+	</select>
+	
+	
+	
+	<select id="selectByPeriodicalId" parameterType="String" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.periodical_id=#{periodical_id}
+		order by  a.time desc
+	</select>
+	
+	<select id="selectByTitle" parameterType="String" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.title like '%${value}%'
+		order by a.time desc
+	</select>
+	
+	<select id="selectByKeyword" parameterType="String" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.keyword like '%${value}%'
+		order by a.time desc
+	</select>
+	
+	<select id="selectByUserDepartment" parameterType="String" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where u.department like '%${value}%'
+		order by a.time desc
+	</select>
+	
+	<select id="selectByStage" parameterType="Integer" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.stage=#{stage}
+		order by time desc
+	</select>
+	
+	<select id="selectByTime" parameterType="String" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.article_id is not NULL
+		<if test="startTime!=null">
+			and a.time&gt;=#{startTime}
+		</if>
+		<if test="endTime!=null">
+			and a.time&lt;=#{endTime}
+		</if>
+		order by a.time desc
+	</select>
+	
+	
+	
+	<select id="getFilePathByArticleId" parameterType="String" resultMap="article">
+		select a.file_path,
+		from article a
+		where a.article_id=#{id}
+		order by a.time desc
+	</select>
+
+	<select id="selectAllBetweenManagerGrade" parameterType="Integer" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.article_id is not NULL and a.stage &lt;&gt; -1
+		<if test="gradeMin!=null">
+			and u.grade&gt;=#{gradeMin}
+		</if>
+		<if test="gradeMax!=null">
+			and u.grade&lt;=#{gradeMax}
+		</if>
+		order by a.stage,a.time ,u.grade
+	</select>
+	<select id="selectAllBetweenArticleStage" parameterType="Integer" resultMap="article">
+		select a.*,u.*,p.*,p.cover_name pcover_name,p.cover_path pcover_path,p.cover_name pcover_name,p.cover_path pcover_path
+		from article a
+		left join user u on a.user_id = u.user_id
+		left join periodical p on a.periodical_id=p.periodical_id
+		where a.article_id is not NULL and a.stage &lt;&gt; -1
+		<if test="stageMin!=null">
+			and a.stage&gt;=#{stageMin}
+		</if>
+		<if test="stageMax!=null">
+			and a.stage&lt;=#{stageMax}
+		</if>
+		order by a.stage,a.time ,u.grade
+	</select>
+</mapper>

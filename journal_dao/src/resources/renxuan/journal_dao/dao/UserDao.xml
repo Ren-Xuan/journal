@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renxuan.journal_dao.dao.UserDao">
+
+ <resultMap id="user" type="User">
+        <id property="user_id" column="user_id" javaType="String"/>
+        <result property="name" column="name" javaType="String"/>
+        <result property="tel" column="tel" javaType="String"/>
+        <result property="department" column="department" javaType="String"/>
+        <result property="checked" column="checked" javaType="Integer"/>
+        <result property="grade" column="grade" javaType="Integer"/>
+        <result property="description" column="description" javaType="String"/>
+        <!-- password单独查询 -->
+        <result property="portrait_path" column="portrait_path" javaType="String"/>
+      <result property="portrait_name" column="portrait_name" javaType="String"/>
+    </resultMap>
+	<insert id="insert" parameterType="User">
+		insert into user(user_id,name,tel,department,checked,grade,portrait_path,portrait_name)
+		values(#{user_id},#{name},#{tel},#{department},#{checked},#{grade},#{portrait_path},#{portrait_name})
+	</insert>
+	
+	<delete id="delete"	parameterType="String">
+		delete from user where user_id=#{id}
+	</delete>
+
+	<delete id="deleteById" parameterType="User">
+		delete from user where user_id=#{user_id}
+	</delete>
+	 <update id="update" parameterType="User">
+        update user set name=#{name},tel=#{tel},department=#{department},
+        checked=#{checked},grade=#{grade},description=#{description},password=#{password},
+        portrait_path=#{portrait_path},portrait_name=#{portrait_name}
+        where user_id=#{user_id}
+    </update>
+    <!-- 
+    List<User> selectById(String id);
+	List<User> selectByTel(String tel);
+	List<User> selectByName(String name);
+	List<User> selectByDepartment(String department);
+	List<User> selectByGrade(int grade);
+	List<User> selectByGradeBelow(int highestGreade);
+	List<User> selectByChecked(int checked); 
+	List<String>selectPasswordById(String id);
+	List<String>selectPasswordByTel(String tel);
+	-->
+	<select id="selectPasswordById" parameterType="String" resultType="String">
+		select password from user where user_id=#{id}
+	</select>
+	<select id="selectPasswordByTel" parameterType="String" resultType="String">
+		select password from user where tel=#{tel}
+	</select>
+	<update id="updatePassword" parameterType="String">
+		update user set password=#{new_password} 
+		where user_id=#{user_id} and password=#{old_password}
+	</update>
+     <select id="selectAll" resultMap="user" >
+        select * from user order by grade 
+     </select>
+     
+     <select id="selectById" resultMap="user" parameterType="String">
+        select * from user where user_id=#{id}
+     </select>
+     
+     <select id="selectByTel" resultMap="user" parameterType="String">
+        select * from user where tel=#{tel}
+     </select>
+     
+     <select id="selectByName" resultMap="user" parameterType="String">
+        select * from user where name=#{name} order by grade 
+     </select>
+    
+    <select id="selectByDepartment" resultMap="user" parameterType="String">
+        select * from user where department=#{department} order by grade 
+     </select>
+     
+     <select id="selectByGrade" resultMap="user" parameterType="Integer">
+        select * from user where grade=#{grade} order by name 
+     </select>
+     
+     <select id="selectByGradeBelow" resultMap="user" parameterType="Integer">
+        select * from user where grade&lt;=#{grade} order by name 
+     </select>
+     
+     <select id="selectByChecked" resultMap="user" parameterType="Integer">
+        select * from user where checked=#{checked}
+     </select>
+    
+</mapper>

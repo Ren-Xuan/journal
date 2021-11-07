@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renxuan.journal_dao.dao.RecommendPeriodicalDao">
+
+ <resultMap id="recommend" type="Periodical">
+          <id property="periodical_id" column="periodical_id" javaType="String"/>
+        <result property="periodical_title" column="periodical_title" javaType="String"/>
+        <result property="preface" column="preface" javaType="String"/>
+        <result property="cover_name" column="cover_name" javaType="String"/>
+        <result property="cover_path" column="cover_path" javaType="String"/>	
+    </resultMap>
+    
+    <!-- 
+   	public List<Periodical> selectAll();
+	public void insert(Article article);
+	public void update(Article article);
+
+	public void delete(Article article);
+	public void deleteById(String article_id);
+	public List<Periodical> select(Article article);
+	public List<Periodical> selectById(String article_id);
+    
+     -->
+   <insert id="insert" parameterType="Periodical">
+		insert into recommend_periodical(periodical_id)
+		values(#{periodical_id})
+	</insert>
+	<insert id="insertById" parameterType="String">
+		insert into recommend_periodical(periodical_id)
+		values(#{periodical_id})
+	</insert>
+	<update id="update" parameterType="Periodical">
+        update recommend_periodical set article_id=#{article_id},
+        user_id=#{user_id}
+        where article_id=#{article_id}
+    </update>
+    
+	
+	<delete id="delete"	parameterType="Periodical">
+		delete from recommend_periodical where periodical_id=#{periodical_id}
+	</delete>
+
+	<delete id="deleteById" parameterType="String">
+		delete from recommend_periodical where periodical_id=#{periodical_id}
+	</delete>
+
+	<select id="selectAll" resultMap="recommend">
+		select p.* 
+		from recommend_periodical r
+		left join periodical p on r.periodical_id = p.periodical_id
+	</select>
+	<select id="select" resultMap="recommend" parameterType="Periodical">
+		select p.* 
+		from recommend_periodical r
+		left join periodical p on r.periodical_id = p.periodical_id
+		where r.periodical_id=#{periodical_id}
+	</select>
+	<select id="selectById" resultMap="recommend" parameterType="String">
+		select p.* 
+		from recommend_periodical r
+		left join periodical p on r.periodical_id = p.periodical_id
+		where r.periodical_id=#{periodical_id}
+	</select>
+</mapper>

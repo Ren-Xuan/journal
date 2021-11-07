@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renxuan.journal_dao.dao.PeriodicalDao">
+
+ <resultMap id="periodical" type="Periodical">
+        <id property="periodical_id" column="periodical_id" javaType="String"/>
+        <result property="periodical_title" column="periodical_title" javaType="String"/>
+        <result property="preface" column="preface" javaType="String"/>
+        <result property="cover_name" column="cover_name" javaType="String"/>
+        <result property="cover_path" column="cover_path" javaType="String"/>	
+        <!-- file到blob转换用到转换器 -->
+        <!-- 级联article -->
+        <collection property="articles" column="article_id" ofType="Article" javaType="java.util.List">
+            <id property="article_id" column="article_id" javaType="String"/>
+             <result property="periodical_id" column="periodical_id" javaType="String"/>
+       		 <result property="user_id" column="user_id" javaType="String"/>
+       		 <result property="author" column="author" javaType="String"/>
+       		 <result property="title" column="title" javaType="String"/>
+       		 <result property="keyword" column="keyword" javaType="String"/>
+        	 <result property="stage" column="stage" javaType="Integer"/>
+        	 <result property="time" column="time" javaType="java.util.Date"/>
+        </collection>
+       
+    </resultMap>
+
+	<!-- 
+		public void insert(Periodical periodical);
+		public void update(Periodical periodical);
+		public void updateWithoutFile(Periodical periodical);
+		public void delete(Periodical periodical);
+		public void deleteById(String periodical_id);
+       	public List<Periodical> selectAll();
+		public List<Periodical> selectById(String id);
+		public List<Periodical> selectByTitle(String title);
+		
+    	
+    -->
+    
+    
+   <insert id="insert" parameterType="Periodical">
+		insert into periodical(periodical_id,periodical_title,preface,cover_name,cover_path)
+		values(#{periodical_id},#{periodical_title},#{preface},#{cover_name},#{cover_path})
+	</insert>
+	
+	<delete id="delete"	parameterType="Periodical">
+		delete from periodical where periodical_id=#{periodical_id}
+	</delete>
+
+	<delete id="deleteById" parameterType="String">
+		delete from periodical where periodical_id=#{periodical_id}
+	</delete>
+	 <update id="update" parameterType="Periodical">
+        update periodical set periodical_title=#{periodical_title},
+        preface=#{preface},cover_name=#{cover_name},cover_path=#{cover_path}
+        where periodical_id=#{periodical_id}
+    </update>
+    
+
+
+	<select id="selectAll" resultMap="periodical">
+		select p.*,a.* 
+		from periodical p
+		left join article a on p.periodical_id = a.periodical_id
+		order by a.time desc
+	</select>
+	<select id="selectAllArticleStageBetween" resultMap="periodical" parameterType="Integer">
+		select p.*,a.* 
+		from periodical p
+		left join article a on p.periodical_id = a.periodical_id
+		where a.stage &gt;=#{minStage} and a.stage &lt;=#{maxStage}
+		order by a.time desc
+	</select>
+	
+	<select id="selectById" parameterType="String" resultMap="periodical">
+		select p.*,a.* 
+		from periodical p
+		left join article a on p.periodical_id = a.periodical_id
+		where p.periodical_id=#{id}
+		order by a.time desc
+	</select>
+	
+	<select id="selectByTitle" parameterType="String" resultMap="periodical">
+		select p.*,a.* 
+		from periodical p
+		left join article a on p.periodical_id = a.periodical_id
+		where contains(p.periodical_title,'"${periodical_title}"')
+		order by a.time desc
+	</select>
+	<!-- 设置恒成立的条件 -->
+	<select id="selectByArticleTime" parameterType="String" resultMap="periodical">
+		select p.*,a.* 
+		from periodical p
+		left join article a on p.periodical_id = a.periodical_id
+		where p.periodical_id is not NULL
+		<if test="startTime!=null">
+			and a.time&gt;=#{startTime}
+		</if>
+		<if test="endTime!=null">
+			and a.time&lt;=#{endTime}
+		</if>
+		order by a.time desc
+	</select>
+	
+
+</mapper>

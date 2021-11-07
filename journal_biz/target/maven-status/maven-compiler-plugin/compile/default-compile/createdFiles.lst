@@ -1,0 +1,8 @@
+renxuan\journal_biz\biz\UserBiz.class
+renxuan\journal_biz\biz\impl\GlobalBizImp.class
+renxuan\journal_biz\biz\PeriodicalBiz.class
+renxuan\journal_biz\biz\ArticleBiz.class
+renxuan\journal_biz\biz\impl\UserBizImp.class
+renxuan\journal_biz\biz\impl\PeriodicalBizImp.class
+renxuan\journal_biz\biz\GlobalBiz.class
+renxuan\journal_biz\biz\impl\ArticleBizImp.class

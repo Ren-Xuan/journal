@@ -1,0 +1,43 @@
+@import url(http://fonts.useso.com/css?family=Raleway:200,500,700,800);
+body, html { font-size: 100%; 	padding: 0; margin: 0;}
+
+/* Reset */
+*,
+*:after,
+*:before {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+/* Clearfix hack by Nicolas Gallagher: http://nicolasgallagher.com/micro-clearfix-hack/ */
+.clearfix:before,
+.clearfix:after {
+	content: " ";
+	display: table;
+}
+
+.clearfix:after {
+	clear: both;
+}
+
+body{
+	background: #f9f7f6;
+	color: #404d5b;
+	font-weight: 500;
+	font-size: 1.05em;
+	font-family: "Microsoft YaHei","宋体","Segoe UI", "Lucida Grande", Helvetica, Arial,sans-serif, FreeSans, Arimo;
+}
+a{color: #2fa0ec;text-decoration: none;outline: none;}
+a:hover,a:focus{color:#74777b;}
+.button-small{background:#e1e1e1;position:relative;color:#000;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;font-size:10px;height:22px;padding:0 5px;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;outline:0;border:none;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+.button-small:active{opacity:.8;}
+.button-search{background:green;border:none;color:#fff}
+.button-search:active{opacity:.9}
+.button-add{background:#0078d7;border:none;color:#fff}
+.button-add:active{opacity:.9}
+.button-edit{background:orange;border:none;color:#fff;}
+.button-edit:active{opacity:.9;}
+.button-del{background:red;border:none;color:#fff;}
+.button-del:active{opacity:.9;}
+.button-small{background:#e1e1e1;position:relative;color:#000;display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;font-size:10px;height:22px;padding:0 5px;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;outline:0;border:none;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.button-small:active{opacity:.8}.button-add{background:#0078d7;border:none;color:#fff}
